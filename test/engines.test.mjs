@@ -119,3 +119,13 @@ test("the steer command prints settings as JSON without any engine", () => {
   assert.ok(out.ollama_options.temperature > 0 && out.openai_params.max_tokens > 0);
   assert.match(out.system_prompt, /Never claim the worm is thinking for you/);
 });
+
+test("sim refuses an unknown stimulus name instead of running with no input", () => {
+  const cli = fileURLToPath(new URL("../src/cli.mjs", import.meta.url));
+  assert.throws(() => execFileSync(process.execPath, [cli, "sim", "--stim", "touch-nose", "--seconds", "1"], { encoding: "utf8", stdio: "pipe" }), (e) => {
+    assert.equal(e.status, 1);
+    assert.match(e.stdout, /Unknown stimulus "touch-nose"/);
+    assert.match(e.stdout, /nose-touch/);
+    return true;
+  });
+});

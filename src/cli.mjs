@@ -12,6 +12,8 @@ const flag = (name, def) => { const i = rest.indexOf(`--${name}`); return i >= 0
 
 if (cmd === "sim") {
   const stim = flag("stim", "touch-head");
+  // an unknown name used to run silently with no input, which looks like a dead network
+  if (stim !== "none" && !STIMULI[stim]) { console.log(`Unknown stimulus "${stim}". Use one of: ${Object.keys(STIMULI).join(", ")}, or none.`); process.exit(1); }
   const seconds = Number(flag("seconds", 3));
   const w = new WormBrain(connectome);
   w.run(1);
