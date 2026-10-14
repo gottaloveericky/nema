@@ -39,6 +39,16 @@ test("dry run plan is deterministic for a fixed seed", () => {
   assert.deepEqual(a.worm, c.worm);
 });
 
+test("--every 4 picks 10 prompts per category and is an exact subset of the full plan", () => {
+  const full = planRun({ prompts, connectome, seed: 1 });
+  const some = planRun({ prompts, connectome, seed: 1, every: 4 });
+  assert.equal(some.rows.length, 50 * 3);
+  for (const c of CATEGORIES) assert.equal(some.rows.filter((r) => r.category === c && r.condition === "worm").length, 10, c);
+  const key = (r) => `${r.index}/${r.condition}`;
+  const byKey = new Map(full.rows.map((r) => [key(r), r]));
+  for (const r of some.rows) assert.deepEqual(r, byKey.get(key(r)), key(r));
+});
+
 test("random condition matches the worm condition's option means within 10 percent and stays in range", () => {
   const plan = planRun({ prompts, connectome, seed: 1 });
   for (const k of OPTION_KEYS) {

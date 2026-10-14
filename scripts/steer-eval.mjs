@@ -5,7 +5,11 @@
 //
 //   node scripts/steer-eval.mjs --dry-run [--limit 5]        print the planned settings, no server needed
 //   node scripts/steer-eval.mjs [--model llama3.2] [--host http://localhost:11434] [--samples 3] [--limit N]
-//                               [--seed 1] [--embed-model nomic-embed-text] [--mapping alt] [--conversation]
+//                               [--every N] [--seed 1] [--embed-model nomic-embed-text] [--mapping alt] [--conversation]
+//
+// The prompts file is sorted by category, so --limit 50 is mostly questions. --every 4 takes every 4th
+// prompt instead, which gives 10 of each category. Each prompt keeps its own index and seeds, so an
+// --every run is an exact subset of the full run.
 //
 // Experiment 1 (the default). Each of the 200 prompts in data/eval-prompts.json goes to the model
 // under three conditions, --samples times each:
@@ -124,7 +128,7 @@ export function callSeed(base, index, sample) {
 }
 
 // Plans experiment 1 (and 4). Pure: no network, no clock, no file writes beyond reading inputs.
-export function planRun({ prompts = loadPrompts(), connectome = loadConnectome(), seed = 1, mapping = "standard", samples = 3, limit } = {}) {
+export function planRun({ prompts = loadPrompts(), connectome = loadConnectome(), seed = 1, mapping = "standard", samples = 3, limit, every = 1 } = {}) {
   const worm = [], alt = [];
   prompts.forEach((p, i) => {
     const w = new WormBrain(connectome, {}, i + 1);
@@ -139,7 +143,7 @@ export function planRun({ prompts = loadPrompts(), connectome = loadConnectome()
 
   const n = Math.min(prompts.length, limit ?? prompts.length);
   const rows = [];
-  for (let i = 0; i < n; i++) {
+  for (let i = 0; i < n; i += every) {
     const p = prompts[i];
     const seeds = Array.from({ length: samples }, (_, s) => callSeed(seed, i, s));
     const base = { id: p.id, category: p.category, index: i, stimuli: worm[i].keys, seeds };
@@ -433,12 +437,15 @@ async function main(argv) {
     host: flag("host", "http://localhost:11434"),
     samples: Number(flag("samples", 3)),
     limit: has("limit") ? Number(flag("limit")) : undefined,
+    every: Number(flag("every", 1)),
     seed: Number(flag("seed", 1)),
     mapping: flag("mapping", "standard"),
     embedModel: flag("embed-model"),
     conversation: has("conversation"),
   };
   if (!["standard", "alt"].includes(cfg.mapping)) fail(`Unknown --mapping ${cfg.mapping}. Use standard or alt.`);
+  if (!Number.isInteger(cfg.every) || cfg.every < 1) fail(`--every needs a whole number of 1 or more, got ${flag("every")}.`);
+  if (cfg.conversation && cfg.every !== 1) fail("--every applies to experiment 1 only. Experiment 2 is one chat over the prompts in order.");
   if (cfg.conversation && cfg.mapping === "alt") fail("--conversation and --mapping alt are separate experiments. Run them one at a time.");
   if (has("dry-run")) return printDryRun(cfg);
   if (!(await reachable(cfg.host))) fail(`Could not reach Ollama at ${cfg.host}. Start it with "ollama serve" and pull ${cfg.model} first.`);
