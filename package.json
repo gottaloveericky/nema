@@ -1,0 +1,24 @@
+{
+  "name": "nema",
+  "version": "0.1.0",
+  "description": "A 302 neuron model built on the real C. elegans connectome, with a steering layer for local language models.",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:site": "node test/site.smoke.mjs",
+    "check": "node scripts/check_prose.mjs && node scripts/check_data.mjs",
+    "sim": "node src/cli.mjs sim",
+    "connect": "node src/cli.mjs connect",
+    "build:site": "node scripts/build_site.mjs",
+    "build:data": "python3 scripts/build_connectome.py",
+    "sweep": "node scripts/sweep.mjs",
+    "experiments": "node scripts/null-models.mjs && node scripts/reservoir.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}
