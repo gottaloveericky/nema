@@ -5,6 +5,7 @@ data/genome/
 dl/
 test-results/
 
-# Local Vercel folder, and env files (the Vercel CLI writes a deploy token to .env.local)
+# Local Netlify folder, and env files that may hold deploy tokens
+.netlify
 .vercel
 .env*

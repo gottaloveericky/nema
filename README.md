@@ -162,11 +162,11 @@ Writes `site/index.html`. Three environment variables set the links on the page:
 
 | variable | what it sets | when not set |
 | --- | --- | --- |
-| `GITHUB_URL` | the repo link and the `git clone` command | the GitHub repo Vercel deploys from, otherwise this repo |
-| `SITE_URL` | the canonical URL and link preview image | Vercel's production domain, otherwise relative paths |
+| `GITHUB_URL` | the repo link and the `git clone` command | the GitHub repo Netlify deploys from, otherwise this repo |
+| `SITE_URL` | the canonical URL and link preview image | Netlify's site URL, otherwise relative paths |
 | `X_URL` | the X account links, for example `https://x.com/yourhandle` | the X links are left out |
 
-Vercel builds the same way (`vercel.json`). Set these in the Vercel project settings under environment variables.
+Netlify builds the same way (`netlify.toml`). Set these in the Netlify site settings under environment variables.
 
 ### Checks
 
