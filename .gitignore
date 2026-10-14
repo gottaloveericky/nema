@@ -8,3 +8,6 @@ test-results/
 # Local Vercel and Netlify folders
 .vercel
 .netlify
+
+.vercel
+.env*

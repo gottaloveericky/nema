@@ -11,10 +11,9 @@ const strip = (src) => src.replace(/^import .*$/gm, "").replace(/^export (defaul
 const env = process.env;
 const vercelRepo = env.VERCEL_GIT_PROVIDER === "github" && env.VERCEL_GIT_REPO_OWNER && env.VERCEL_GIT_REPO_SLUG ? `https://github.com/${env.VERCEL_GIT_REPO_OWNER}/${env.VERCEL_GIT_REPO_SLUG}` : "";
 const vercelSite = env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}` : "";
-const gh = (env.GITHUB_URL || vercelRepo || "https://github.com/YOUR_GITHUB_USERNAME/nema").replace(/\/$/, "");
+const gh = (env.GITHUB_URL || vercelRepo || "https://github.com/gottaloveericky/nema").replace(/\/$/, "");
 const site = (env.SITE_URL || vercelSite || "").replace(/\/$/, "");
 const x = env.X_URL || "";
-if (gh.includes("YOUR_GITHUB_USERNAME")) console.warn("GITHUB_URL is not set, the page links to a placeholder repo. Set GITHUB_URL to your repo.");
 if (!site) console.warn("SITE_URL is not set, link previews use relative image paths.");
 
 const json = (p) => JSON.stringify(JSON.parse(read(p)));

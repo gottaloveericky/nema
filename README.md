@@ -38,7 +38,7 @@ The site in `site/` is a long scroll page with a generative pixel worm field, a 
 ## Quick start
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/nema
+git clone https://github.com/gottaloveericky/nema
 cd nema
 npm test
 node src/cli.mjs sim --stim touch-tail --seconds 3
@@ -162,7 +162,7 @@ Writes `site/index.html`. Three environment variables set the links on the page:
 
 | variable | what it sets | when not set |
 | --- | --- | --- |
-| `GITHUB_URL` | the repo link and the `git clone` command | the GitHub repo Vercel deploys from, otherwise a placeholder |
+| `GITHUB_URL` | the repo link and the `git clone` command | the GitHub repo Vercel deploys from, otherwise this repo |
 | `SITE_URL` | the canonical URL and link preview image | Vercel's production domain, otherwise relative paths |
 | `X_URL` | the X account links, for example `https://x.com/yourhandle` | the X links are left out |
 
