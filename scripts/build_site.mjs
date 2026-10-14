@@ -1,7 +1,7 @@
 // Inlines the data and the simulation code into site/template.html.
 // Writes site/index.html (full page) and site/artifact.html (fragment for hosts that wrap the page themselves).
-//   GITHUB_URL  repo link on the page   (on Vercel, defaults to the GitHub repo the project is connected to)
-//   SITE_URL    where the page is hosted, used for link previews (on Vercel, defaults to the production domain)
+//   GITHUB_URL  repo link on the page   (on Vercel or Netlify, defaults to the GitHub repo the site deploys from)
+//   SITE_URL    where the page is hosted, used for link previews (on Vercel or Netlify, defaults to the production URL)
 //   X_URL       the project's X account (the X links are left out when this is not set)
 import fs from "node:fs";
 const root = new URL("../", import.meta.url);
@@ -11,8 +11,11 @@ const strip = (src) => src.replace(/^import .*$/gm, "").replace(/^export (defaul
 const env = process.env;
 const vercelRepo = env.VERCEL_GIT_PROVIDER === "github" && env.VERCEL_GIT_REPO_OWNER && env.VERCEL_GIT_REPO_SLUG ? `https://github.com/${env.VERCEL_GIT_REPO_OWNER}/${env.VERCEL_GIT_REPO_SLUG}` : "";
 const vercelSite = env.VERCEL_PROJECT_PRODUCTION_URL ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}` : "";
-const gh = (env.GITHUB_URL || vercelRepo || "https://github.com/gottaloveericky/nema").replace(/\/$/, "");
-const site = (env.SITE_URL || vercelSite || "").replace(/\/$/, "");
+// Netlify sets URL and REPOSITORY_URL. REPOSITORY_URL can be an ssh remote, so only take it when it is https.
+const netlifyRepo = env.NETLIFY && /^https:\/\//.test(env.REPOSITORY_URL || "") ? env.REPOSITORY_URL.replace(/\.git$/, "") : "";
+const netlifySite = env.NETLIFY ? env.URL || "" : "";
+const gh = (env.GITHUB_URL || vercelRepo || netlifyRepo || "https://github.com/gottaloveericky/nema").replace(/\/$/, "");
+const site = (env.SITE_URL || vercelSite || netlifySite || "").replace(/\/$/, "");
 const x = env.X_URL || "";
 if (!site) console.warn("SITE_URL is not set, link previews use relative image paths.");
 
